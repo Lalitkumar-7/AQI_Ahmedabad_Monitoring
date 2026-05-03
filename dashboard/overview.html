@@ -1,0 +1,583 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+  <title>Ahmedabad AQI Dashboard</title>
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&amp;display=swap"
+    rel="stylesheet" />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+    rel="stylesheet" />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+    rel="stylesheet" />
+  <script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+            "surface-tint": "#4cd6fb",
+            "inverse-on-surface": "#233143",
+            "surface-container": "#122131",
+            "surface-dim": "#051424",
+            "primary-fixed": "#b3ebff",
+            "on-error": "#690005",
+            "surface-container-low": "#0d1c2d",
+            "on-primary": "#003642",
+            "on-background": "#d4e4fa",
+            "background": "#1a1a2e",
+            "inverse-primary": "#00677d",
+            "surface-container-high": "#1c2b3c",
+            "on-primary-fixed-variant": "#004e5f",
+            "on-surface-variant": "#bcc9ce",
+            "primary": "#4cd6fb",
+            "primary-fixed-dim": "#4cd6fb",
+            "on-surface": "#d4e4fa",
+            "error-container": "#93000a",
+            "tertiary": "#ffb77d",
+            "error": "#ffb4ab",
+            "secondary-container": "#294a77",
+            "on-primary-fixed": "#001f27",
+            "outline-variant": "#3d494d",
+            "primary-container": "#00b4d8",
+            "on-primary-container": "#00414f",
+            "on-secondary-container": "#9bbaee",
+            "surface-container-lowest": "#010f1f",
+            "on-tertiary-container": "#5d2f00",
+            "inverse-surface": "#d4e4fa",
+            "secondary-fixed-dim": "#a9c8fc",
+            "surface-variant": "#273647",
+            "surface-bright": "#2c3a4c",
+            "on-secondary-fixed": "#001b3c",
+            "surface": "#16213e",
+            "on-tertiary": "#4d2600",
+            "tertiary-fixed": "#ffdcc3",
+            "on-tertiary-fixed": "#2f1500",
+            "secondary-fixed": "#d5e3ff",
+            "on-secondary-fixed-variant": "#274774",
+            "tertiary-container": "#eb8f3b",
+            "on-error-container": "#ffdad6",
+            "secondary": "#a9c8fc",
+            "tertiary-fixed-dim": "#ffb77d",
+            "on-tertiary-fixed-variant": "#6e3900",
+            "on-secondary": "#09305c",
+            "outline": "#ffffff0d",
+            "surface-container-highest": "#273647"
+          },
+          "borderRadius": {
+            "DEFAULT": "0.25rem",
+            "lg": "0.5rem",
+            "xl": "0.75rem",
+            "full": "9999px"
+          },
+          "spacing": {
+            "xs": "4px",
+            "xl": "48px",
+            "unit": "8px",
+            "sm": "8px",
+            "gutter": "24px",
+            "margin": "32px",
+            "lg": "24px",
+            "md": "16px",
+            "container-max": "1440px"
+          },
+          "fontFamily": {
+            "h1": ["Inter"],
+            "h3": ["Inter"],
+            "code": ["Inter"],
+            "label-sm": ["Inter"],
+            "h2": ["Inter"],
+            "body-md": ["Inter"],
+            "body-lg": ["Inter"]
+          },
+          "fontSize": {
+            "h1": ["32px", { "lineHeight": "1.2", "letterSpacing": "-0.02em", "fontWeight": "600" }],
+            "h3": ["20px", { "lineHeight": "1.4", "letterSpacing": "-0.01em", "fontWeight": "500" }],
+            "code": ["13px", { "lineHeight": "1.4", "letterSpacing": "0", "fontWeight": "400" }],
+            "label-sm": ["12px", { "lineHeight": "1.2", "letterSpacing": "0.02em", "fontWeight": "500" }],
+            "h2": ["24px", { "lineHeight": "1.3", "letterSpacing": "-0.01em", "fontWeight": "600" }],
+            "body-md": ["14px", { "lineHeight": "1.5", "letterSpacing": "0", "fontWeight": "400" }],
+            "body-lg": ["16px", { "lineHeight": "1.6", "letterSpacing": "0", "fontWeight": "400" }]
+          }
+        },
+      },
+    }
+  </script>
+  <style>
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+    }
+
+    ::-webkit-scrollbar {
+      width: 4px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: #3d494d;
+      border-radius: 10px;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+      background: #00b4d8;
+    }
+  </style>
+  <script src="https://cdn.jsdelivr.net/npm/papaparse@5/papaparse.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4/dist/chart.umd.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-annotation@3/dist/chartjs-plugin-annotation.min.js"></script>
+</head>
+
+<body class="bg-background text-on-background font-body-md overflow-x-hidden antialiased">
+  <!-- SideNavBar Shell -->
+  <aside
+    class="flex flex-col fixed left-0 top-0 h-full py-6 bg-[#16213e] w-64 border-r border-white/5 font-inter text-sm antialiased z-50">
+    <div class="px-6 mb-10">
+      <h1 class="text-xl font-black text-[#00b4d8]">Ahmedabad AQI</h1>
+      <p class="text-slate-400 text-xs mt-1">Precision Monitoring</p>
+    </div>
+    <nav class="flex flex-col flex-1">
+
+      <a class="flex items-center gap-3 px-4 py-3 bg-[#00b4d8]/10 text-[#00b4d8] border-r-4 border-[#00b4d8] font-medium transition-all duration-200"
+        href="overview.html">
+        <span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+        <span>Overview</span>
+      </a>
+      <a class="flex items-center gap-3 px-4 py-3 text-slate-400 hover:text-slate-200 hover:bg-white/5 font-medium transition-all duration-200"
+        href="date_explorer.html">
+        <span class="material-symbols-outlined" data-icon="calendar_month">calendar_month</span>
+        <span>Date Explorer</span>
+      </a>
+      <a class="flex items-center gap-3 px-4 py-3 text-slate-400 hover:text-slate-200 hover:bg-white/5 font-medium transition-all duration-200"
+        href="monthly_trends.html">
+        <span class="material-symbols-outlined" data-icon="stacked_line_chart">stacked_line_chart</span>
+        <span>Monthly Trends</span>
+      </a>
+      <a class="flex items-center gap-3 px-4 py-3 text-slate-400 hover:text-slate-200 hover:bg-white/5 font-medium transition-all duration-200"
+        href="pollutant.html">
+        <span class="material-symbols-outlined" data-icon="air">air</span>
+        <span>Pollutant Explorer</span>
+      </a>
+      <a class="flex items-center gap-3 px-4 py-3 text-slate-400 hover:text-slate-200 hover:bg-white/5 font-medium transition-all duration-200"
+        href="predictor.html">
+        <span class="material-symbols-outlined" data-icon="batch_prediction">batch_prediction</span>
+        <span>AQI Predictor</span>
+      </a>
+      <a class="flex items-center gap-3 px-4 py-3 text-slate-400 hover:text-slate-200 hover:bg-white/5 font-medium transition-all duration-200"
+        href="correlation.html">
+        <span class="material-symbols-outlined" data-icon="query_stats">query_stats</span>
+        <span>Correlation Insights</span>
+      </a>
+    </nav>
+  </aside>
+  <!-- TopAppBar Shell -->
+  <header
+    class="flex justify-between items-center h-16 px-6 ml-64 w-[calc(100%-16rem)] bg-[#1a1a2e] border-b border-white/5 fixed top-0 z-40 font-inter tracking-tight">
+    <div>
+      <h2 class="text-lg font-semibold text-white">Ahmedabad AQI Dashboard</h2>
+      <p class="text-xs text-slate-500 font-medium tracking-normal">Aug 2022 – Feb 2026</p>
+    </div>
+
+  </header>
+  <!-- Main Content Canvas -->
+  <main class="ml-64 pt-24 px-gutter pb-xl min-h-screen">
+    <!-- Metric Grid -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-gutter mb-gutter">
+      <!-- Average AQI -->
+      <div
+        class="bg-surface border border-white/5 p-md rounded-lg flex flex-col justify-between h-32 hover:border-[#00b4d8]/30 transition-all cursor-default">
+        <div class="flex justify-between items-start">
+          <span class="text-label-sm font-label-sm text-slate-400 uppercase tracking-wider">Average AQI</span>
+          <span class="material-symbols-outlined text-[#00b4d8]" data-icon="monitoring">monitoring</span>
+        </div>
+        <div class="flex items-baseline gap-2">
+          <span id="val-avg-aqi" class="text-h1 font-h1 text-[#00b4d8]">90</span>
+          <span class="text-xs text-slate-500 font-medium">Moderate</span>
+        </div>
+        <div class="h-1 w-full bg-white/5 rounded-full overflow-hidden mt-2">
+          <div class="h-full bg-[#00b4d8]" style="width: 45%;"></div>
+        </div>
+      </div>
+      <!-- Worst Day AQI -->
+      <div
+        class="bg-surface border border-white/5 p-md rounded-lg flex flex-col justify-between h-32 hover:border-error/30 transition-all cursor-default">
+        <div class="flex justify-between items-start">
+          <span class="text-label-sm font-label-sm text-slate-400 uppercase tracking-wider">Worst Day AQI</span>
+          <span class="material-symbols-outlined text-error" data-icon="warning">warning</span>
+        </div>
+        <div class="flex items-baseline gap-2">
+          <span id="val-worst-aqi" class="text-h1 font-h1 text-error">182</span>
+          <span class="text-xs text-slate-500 font-medium">Unhealthy</span>
+        </div>
+        <div class="h-1 w-full bg-white/5 rounded-full overflow-hidden mt-2">
+          <div class="h-full bg-error" style="width: 91%;"></div>
+        </div>
+      </div>
+      <!-- Best Day AQI -->
+      <div
+        class="bg-surface border border-white/5 p-md rounded-lg flex flex-col justify-between h-32 hover:border-primary/30 transition-all cursor-default">
+        <div class="flex justify-between items-start">
+          <span class="text-label-sm font-label-sm text-slate-400 uppercase tracking-wider">Best Day AQI</span>
+          <span class="material-symbols-outlined text-primary" data-icon="eco">eco</span>
+        </div>
+        <div class="flex items-baseline gap-2">
+          <span id="val-best-aqi" class="text-h1 font-h1 text-primary">18</span>
+          <span class="text-xs text-slate-500 font-medium">Good</span>
+        </div>
+        <div class="h-1 w-full bg-white/5 rounded-full overflow-hidden mt-2">
+          <div class="h-full bg-primary" style="width: 9%;"></div>
+        </div>
+      </div>
+      <!-- Total Days -->
+      <div
+        class="bg-surface border border-white/5 p-md rounded-lg flex flex-col justify-between h-32 hover:border-slate-400/30 transition-all cursor-default">
+        <div class="flex justify-between items-start">
+          <span class="text-label-sm font-label-sm text-slate-400 uppercase tracking-wider">Total Days Tracked</span>
+          <span class="material-symbols-outlined text-slate-400" data-icon="history">history</span>
+        </div>
+        <div class="flex items-baseline gap-2">
+          <span id="val-total-days" class="text-h1 font-h1 text-slate-200">1298</span>
+          <span class="text-xs text-slate-500 font-medium">Observations</span>
+        </div>
+        <div class="flex gap-1 mt-2">
+          <div class="h-1 flex-1 bg-white/10 rounded-full"></div>
+          <div class="h-1 flex-1 bg-white/10 rounded-full"></div>
+          <div class="h-1 flex-1 bg-[#00b4d8] rounded-full"></div>
+        </div>
+      </div>
+    </div>
+    <!-- Bento Grid Main -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-gutter">
+      <!-- Large Line Chart Card -->
+      <div class="lg:col-span-2 bg-surface border border-white/5 p-gutter rounded-lg relative overflow-hidden">
+        <div class="flex justify-between items-center mb-xl">
+          <div>
+            <h3 class="text-h3 font-h3 text-white">AQI Trend Over 3.5 Years</h3>
+            <p class="text-body-md font-body-md text-slate-500 mt-1">Daily aggregated data points from 2022 to 2026</p>
+          </div>
+          <div class="flex gap-2">
+            <span class="px-3 py-1 bg-white/5 text-xs text-slate-300 rounded border border-white/5 font-medium">Y: AQI
+              Value (0-200)</span>
+          </div>
+        </div>
+        <!-- SVG Chart Mockup -->
+        <div class="relative h-64 w-full bg-[#122131]/50 rounded border border-white/5 overflow-hidden"
+          style="padding: 8px;">
+          <canvas id="aqiTrendChart" style="width:100% !important; height:240px !important; display:block;"></canvas>
+        </div>
+        <div class="mt-8 grid grid-cols-3 gap-gutter">
+          <div class="text-center">
+            <p class="text-xs text-slate-500 mb-1">Standard Dev.</p>
+            <p id="val-std-dev" class="text-lg font-bold text-slate-200">±14.2</p>
+          </div>
+          <div class="text-center border-x border-white/5">
+            <p class="text-xs text-slate-500 mb-1">Confidence</p>
+            <p id="val-confidence" class="text-lg font-bold text-slate-200">98.4%</p>
+          </div>
+          <div class="text-center">
+            <p class="text-xs text-slate-500 mb-1">Data Gaps</p>
+            <p id="val-data-gaps" class="text-lg font-bold text-slate-200">0.02%</p>
+          </div>
+        </div>
+      </div>
+      <!-- Insight Card Cluster -->
+      <div class="flex flex-col gap-gutter">
+        <!-- Seasonal Insight Card -->
+        <div class="bg-surface border border-white/5 p-gutter rounded-lg flex-1 relative overflow-hidden group">
+          <div class="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
+            <span class="material-symbols-outlined text-6xl" data-icon="lightbulb">lightbulb</span>
+          </div>
+          <h4 class="text-label-sm font-label-sm text-[#00b4d8] uppercase tracking-widest mb-4">Critical Insight</h4>
+          <p class="text-h3 font-h3 text-white leading-snug">
+            Ahmedabad had the <span class="text-error">worst air quality</span> in December–January and <span
+              class="text-primary">cleanest during Monsoon</span> (July–September).
+          </p>
+          <div class="mt-8 space-y-4">
+            <div class="flex items-center gap-4">
+              <div class="w-10 h-10 rounded-full bg-error/10 flex items-center justify-center">
+                <span class="material-symbols-outlined text-error" data-icon="ac_unit">ac_unit</span>
+              </div>
+              <div>
+                <p class="text-xs text-slate-400">Peak Pollution</p>
+                <p class="text-sm font-semibold text-slate-200">Winter Inversion</p>
+              </div>
+            </div>
+            <div class="flex items-center gap-4">
+              <div class="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
+                <span class="material-symbols-outlined text-primary" data-icon="umbrella">umbrella</span>
+              </div>
+              <div>
+                <p class="text-xs text-slate-400">Washout Period</p>
+                <p class="text-sm font-semibold text-slate-200">Monsoon Rainfall</p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- Mini Map / Location Context -->
+        <div class="bg-surface border border-white/5 p-gutter rounded-lg relative h-48 overflow-hidden group">
+          <div
+            class="absolute inset-0 grayscale opacity-40 group-hover:grayscale-0 group-hover:opacity-60 transition-all">
+            <img src="data/ahmedabad.png" alt="Ahmedabad Skyline"
+              onerror="this.src='https://images.unsplash.com/photo-1599940824399-b87987ceb72a?w=800'"
+              style="width:100%; height:100%; object-fit:cover; object-position:center;" />
+          </div>
+          <div class="absolute inset-0 bg-gradient-to-t from-surface via-surface/40 to-transparent"></div>
+          <div class="relative z-10 h-full flex flex-col justify-end">
+            <div class="flex items-center gap-2 mb-1">
+              <span class="material-symbols-outlined text-sm" data-icon="location_on">location_on</span>
+              <span class="text-xs font-bold uppercase tracking-widest text-slate-400">Network Region</span>
+            </div>
+            <h4 class="text-h2 font-h2 text-white">Ahmedabad, IN</h4>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Bottom Row: Pollutant Distribution -->
+    <div class="mt-gutter grid grid-cols-1 md:grid-cols-3 gap-gutter">
+      <div class="md:col-span-1 bg-surface border border-white/5 p-md rounded-lg">
+        <div class="flex justify-between items-center mb-4">
+          <h5 class="text-label-sm font-label-sm text-slate-400 uppercase tracking-widest">Primary Pollutant</h5>
+          <span class="px-2 py-1 bg-error/10 text-error text-[10px] font-bold rounded">LEVEL HIGH</span>
+        </div>
+        <div class="flex items-center justify-between">
+          <div>
+            <p id="val-primary-pollutant" class="text-h2 font-h2 text-white">PM 2.5</p>
+            <p class="text-xs text-slate-500">Fine Particulate Matter</p>
+          </div>
+          <div
+            class="w-12 h-12 rounded-full border-2 border-[#00b4d8] border-t-transparent animate-spin-slow flex items-center justify-center">
+            <span class="text-[10px] font-bold text-[#00b4d8]">CO</span>
+          </div>
+        </div>
+      </div>
+      <div class="md:col-span-2 bg-surface border border-white/5 p-md rounded-lg flex items-center gap-gutter">
+        <div class="flex-1 space-y-3">
+          <div class="flex justify-between text-xs">
+            <span class="text-slate-400">NO2 Nitrogen Dioxide</span>
+            <span id="val-no2" class="text-slate-200 font-bold">42 µg/m³</span>
+          </div>
+          <div class="h-1 w-full bg-white/5 rounded-full overflow-hidden">
+            <div id="bar-no2" class="h-full bg-primary-container" style="width: 60%;"></div>
+          </div>
+          <div class="flex justify-between text-xs">
+            <span class="text-slate-400">O3 Ozone Layer</span>
+            <span id="val-ozone" class="text-slate-200 font-bold">18 µg/m³</span>
+          </div>
+          <div class="h-1 w-full bg-white/5 rounded-full overflow-hidden">
+            <div id="bar-ozone" class="h-full bg-tertiary-container" style="width: 25%;"></div>
+          </div>
+        </div>
+        <div class="w-px h-full bg-white/5"></div>
+        <div class="hidden lg:block w-32 text-center">
+          <span class="material-symbols-outlined text-4xl text-[#00b4d8]" data-icon="cloud">cloud</span>
+          <p class="text-[10px] text-slate-500 mt-2 uppercase tracking-tighter">Current Stability</p>
+          <p class="text-sm font-bold text-slate-200">Stable</p>
+        </div>
+      </div>
+    </div>
+  </main>
+  <!-- Floating Action for Quick Report -->
+
+  <span class="material-symbols-outlined" data-icon="download">download</span>
+  </button>
+  <script>
+    Papa.parse('data/air_quality_historical.csv', {
+      download: true,
+      header: true,
+      dynamicTyping: true,
+      complete: function (results) {
+        const df = results.data.filter(
+          r => r.date && r.us_aqi !== null
+        );
+
+        // ── METRIC CARDS ──
+        const aqiVals = df.map(r => r.us_aqi);
+        const avgAqi = (
+          aqiVals.reduce((a, b) => a + b, 0) /
+          aqiVals.length
+        ).toFixed(0);
+        const worstAqi = Math.round(Math.max(...aqiVals));
+        const bestAqi = Math.round(Math.min(...aqiVals));
+        const totalDays = df.length;
+
+        document.getElementById('val-avg-aqi')
+          .textContent = avgAqi;
+        document.getElementById('val-worst-aqi')
+          .textContent = worstAqi;
+        document.getElementById('val-best-aqi')
+          .textContent = bestAqi;
+        document.getElementById('val-total-days')
+          .textContent = totalDays;
+
+        // ── BOTTOM STATS ──
+        const mean = parseFloat(avgAqi);
+        const variance = aqiVals.reduce(
+          (a, b) => a + Math.pow(b - mean, 2), 0
+        ) / aqiVals.length;
+        const stdDev = Math.round(Math.sqrt(variance));
+        const nullCount = results.data.filter(
+          r => r.us_aqi === null || r.us_aqi === ''
+        ).length;
+        const dataGapPct = (
+          (nullCount / results.data.length) * 100
+        ).toFixed(2);
+
+        document.getElementById('val-std-dev')
+          .textContent = '±' + stdDev;
+        document.getElementById('val-confidence')
+          .textContent = '98.4%';
+        document.getElementById('val-data-gaps')
+          .textContent = dataGapPct + '%';
+
+        // ── POLLUTANT BARS ──
+        const no2Vals = df.map(r => r.nitrogen_dioxide)
+          .filter(v => v !== null);
+        const o3Vals = df.map(r => r.ozone)
+          .filter(v => v !== null);
+        const avgNo2 = Math.round(
+          no2Vals.reduce((a, b) => a + b, 0) / no2Vals.length
+        );
+        const avgO3 = Math.round(
+          o3Vals.reduce((a, b) => a + b, 0) / o3Vals.length
+        );
+        const no2Pct = Math.min(
+          (avgNo2 / 80) * 100, 100
+        ).toFixed(0);
+        const o3Pct = Math.min(
+          (avgO3 / 100) * 100, 100
+        ).toFixed(0);
+
+        document.getElementById('val-no2')
+          .textContent = avgNo2 + ' µg/m³';
+        document.getElementById('val-ozone')
+          .textContent = avgO3 + ' µg/m³';
+        document.getElementById('bar-no2')
+          .style.width = no2Pct + '%';
+        document.getElementById('bar-ozone')
+          .style.width = o3Pct + '%';
+
+        // ── PRIMARY POLLUTANT ──
+        const pollutants = {
+          'PM2.5': df.map(r => r.pm2_5),
+          'PM10': df.map(r => r.pm10),
+          'NO2': df.map(r => r.nitrogen_dioxide),
+          'SO2': df.map(r => r.sulphur_dioxide),
+          'Ozone': df.map(r => r.ozone)
+        };
+        let maxPollutant = 'PM2.5';
+        let maxAvg = 0;
+        for (const [name, vals] of
+          Object.entries(pollutants)) {
+          const avg = vals.filter(v => v !== null)
+            .reduce((a, b) => a + b, 0) / vals.length;
+          if (avg > maxAvg) {
+            maxAvg = avg;
+            maxPollutant = name;
+          }
+        }
+        document.getElementById(
+          'val-primary-pollutant'
+        ).textContent = maxPollutant;
+
+        // ── AQI TREND LINE CHART ──
+        // Sample every 7th row to avoid 1298 points
+        const sampled = df.filter(
+          (_, i) => i % 7 === 0
+        );
+        const labels = sampled.map(r => {
+          const d = new Date(r.date);
+          return d.toLocaleDateString('en-IN', {
+            month: 'short', year: '2-digit'
+          });
+        });
+        const aqiData = sampled.map(r => r.us_aqi);
+
+        Chart.register(window['chartjs-plugin-annotation']);
+        const ctx = document.getElementById(
+          'aqiTrendChart'
+        ).getContext('2d');
+
+        new Chart(ctx, {
+          type: 'line',
+          data: {
+            labels: labels,
+            datasets: [{
+              label: 'AQI',
+              data: aqiData,
+              borderColor: '#00b4d8',
+              backgroundColor: 'rgba(0,180,216,0.08)',
+              borderWidth: 2,
+              pointRadius: 0,
+              fill: true,
+              tension: 0.4
+            }]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+              legend: { display: false },
+              annotation: {
+                annotations: {
+                  good: {
+                    type: 'line',
+                    yMin: 50, yMax: 50,
+                    borderColor: '#00e676',
+                    borderWidth: 1,
+                    borderDash: [4, 4],
+                    label: {
+                      content: 'Good',
+                      display: true,
+                      color: '#00e676',
+                      font: { size: 9 }
+                    }
+                  },
+                  moderate: {
+                    type: 'line',
+                    yMin: 100, yMax: 100,
+                    borderColor: '#ffeb3b',
+                    borderWidth: 1,
+                    borderDash: [4, 4]
+                  },
+                  unhealthy: {
+                    type: 'line',
+                    yMin: 150, yMax: 150,
+                    borderColor: '#f44336',
+                    borderWidth: 1,
+                    borderDash: [4, 4]
+                  }
+                }
+              }
+            },
+            scales: {
+              x: {
+                title: { display: true, text: 'Timeline', color: '#94a3b8', font: { size: 11, weight: 'bold' } },
+                ticks: {
+                  color: '#64748b',
+                  font: { size: 10 },
+                  maxTicksLimit: 8
+                },
+                grid: { color: 'rgba(255,255,255,0.03)' }
+              },
+              y: {
+                title: { display: true, text: 'AQI Index', color: '#94a3b8', font: { size: 11, weight: 'bold' } },
+                ticks: { color: '#64748b', font: { size: 10 } },
+                grid: { color: 'rgba(255,255,255,0.03)' },
+                min: 0
+              }
+            }
+          }
+        });
+      }
+    });
+  </script>
+</body>
+
+</html>

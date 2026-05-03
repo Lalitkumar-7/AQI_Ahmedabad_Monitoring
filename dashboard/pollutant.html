@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+                  "surface-container-low": "#0d1c2d",
+                  "on-surface-variant": "#bcc9ce",
+                  "on-error-container": "#ffdad6",
+                  "tertiary": "#ffb77d",
+                  "on-primary-fixed-variant": "#004e5f",
+                  "surface-bright": "#2c3a4c",
+                  "secondary-fixed": "#d5e3ff",
+                  "on-surface": "#d4e4fa",
+                  "surface-container-highest": "#273647",
+                  "error-container": "#93000a",
+                  "outline-variant": "#3d494d",
+                  "on-primary": "#003642",
+                  "primary": "#4cd6fb",
+                  "background": "#051424",
+                  "surface-container": "#122131",
+                  "on-tertiary-container": "#5d2f00",
+                  "error": "#ffb4ab",
+                  "outline": "#869398",
+                  "on-secondary-fixed": "#001b3c",
+                  "surface-container-high": "#1c2b3c",
+                  "primary-fixed": "#b3ebff",
+                  "secondary-container": "#294a77",
+                  "surface-dim": "#051424",
+                  "surface-variant": "#273647",
+                  "on-background": "#d4e4fa",
+                  "on-secondary-container": "#9bbaee",
+                  "primary-container": "#00b4d8",
+                  "on-tertiary-fixed": "#2f1500",
+                  "on-secondary": "#09305c",
+                  "surface-container-lowest": "#010f1f",
+                  "surface-tint": "#4cd6fb",
+                  "primary-fixed-dim": "#4cd6fb",
+                  "on-tertiary": "#4d2600",
+                  "inverse-surface": "#d4e4fa",
+                  "tertiary-fixed-dim": "#ffb77d",
+                  "on-tertiary-fixed-variant": "#6e3900",
+                  "surface": "#051424",
+                  "on-secondary-fixed-variant": "#274774",
+                  "on-primary-fixed": "#001f27",
+                  "secondary-fixed-dim": "#a9c8fc",
+                  "on-error": "#690005",
+                  "inverse-on-surface": "#233143",
+                  "on-primary-container": "#00414f",
+                  "inverse-primary": "#00677d",
+                  "tertiary-fixed": "#ffdcc3",
+                  "secondary": "#a9c8fc",
+                  "tertiary-container": "#eb8f3b"
+          },
+          "borderRadius": {
+                  "DEFAULT": "0.25rem",
+                  "lg": "0.5rem",
+                  "xl": "0.75rem",
+                  "full": "9999px"
+          },
+          "spacing": {
+                  "xs": "4px",
+                  "md": "16px",
+                  "gutter": "24px",
+                  "sm": "8px",
+                  "container-max": "1440px",
+                  "lg": "24px",
+                  "xl": "48px",
+                  "unit": "8px",
+                  "margin": "32px"
+          },
+          "fontFamily": {
+                  "h1": ["Inter"],
+                  "label-sm": ["Inter"],
+                  "code": ["Inter"],
+                  "body-md": ["Inter"],
+                  "body-lg": ["Inter"],
+                  "h3": ["Inter"],
+                  "h2": ["Inter"]
+          },
+          "fontSize": {
+                  "h1": ["32px", {"lineHeight": "1.2", "letterSpacing": "-0.02em", "fontWeight": "600"}],
+                  "label-sm": ["12px", {"lineHeight": "1.2", "letterSpacing": "0.02em", "fontWeight": "500"}],
+                  "code": ["13px", {"lineHeight": "1.4", "letterSpacing": "0", "fontWeight": "400"}],
+                  "body-md": ["14px", {"lineHeight": "1.5", "letterSpacing": "0", "fontWeight": "400"}],
+                  "body-lg": ["16px", {"lineHeight": "1.6", "letterSpacing": "0", "fontWeight": "400"}],
+                  "h3": ["20px", {"lineHeight": "1.4", "letterSpacing": "-0.01em", "fontWeight": "500"}],
+                  "h2": ["24px", {"lineHeight": "1.3", "letterSpacing": "-0.01em", "fontWeight": "600"}]
+          }
+        },
+      },
+    }
+  </script>
+<style>
+    body { background-color: #1a1a2e; color: #d4e4fa; }
+    .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-thumb { background: #3d494d; border-radius: 10px; }
+    ::-webkit-scrollbar-thumb:hover { background: #00b4d8; }
+  </style>
+    <script src="https://cdn.jsdelivr.net/npm/papaparse@5/papaparse.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4/dist/chart.umd.min.js"></script>
+</head>
+<body class="font-body-md overflow-hidden">
+
+  <!-- SideNavBar -->
+  <aside class="flex flex-col fixed left-0 top-0 h-full py-6 bg-[#16213e] w-64 border-r border-white/5 font-inter text-sm antialiased z-50">
+    <div class="px-6 mb-10">
+        <h1 class="text-xl font-black text-[#00b4d8]">Ahmedabad AQI</h1>
+        <p class="text-slate-400 text-xs mt-1">Precision Monitoring</p>
+    </div>
+    <nav class="flex flex-col flex-1">
+
+        <a class="flex items-center gap-3 px-4 py-3 text-slate-400 hover:text-slate-200 hover:bg-white/5 font-medium transition-all duration-200" href="overview.html">
+            <span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+            <span>Overview</span>
+        </a>
+        <a class="flex items-center gap-3 px-4 py-3 text-slate-400 hover:text-slate-200 hover:bg-white/5 font-medium transition-all duration-200" href="date_explorer.html">
+            <span class="material-symbols-outlined" data-icon="calendar_month">calendar_month</span>
+            <span>Date Explorer</span>
+        </a>
+        <a class="flex items-center gap-3 px-4 py-3 text-slate-400 hover:text-slate-200 hover:bg-white/5 font-medium transition-all duration-200" href="monthly_trends.html">
+            <span class="material-symbols-outlined" data-icon="stacked_line_chart">stacked_line_chart</span>
+            <span>Monthly Trends</span>
+        </a>
+        <a class="flex items-center gap-3 px-4 py-3 bg-[#00b4d8]/10 text-[#00b4d8] border-r-4 border-[#00b4d8] font-medium transition-all duration-200" href="pollutant.html">
+            <span class="material-symbols-outlined" data-icon="air">air</span>
+            <span>Pollutant Explorer</span>
+        </a>
+        <a class="flex items-center gap-3 px-4 py-3 text-slate-400 hover:text-slate-200 hover:bg-white/5 font-medium transition-all duration-200" href="predictor.html">
+            <span class="material-symbols-outlined" data-icon="batch_prediction">batch_prediction</span>
+            <span>AQI Predictor</span>
+        </a>
+        <a class="flex items-center gap-3 px-4 py-3 text-slate-400 hover:text-slate-200 hover:bg-white/5 font-medium transition-all duration-200" href="correlation.html">
+            <span class="material-symbols-outlined" data-icon="query_stats">query_stats</span>
+            <span>Correlation Insights</span>
+        </a>
+    </nav>
+    </aside>
+
+  <!-- Main Content -->
+  <main class="ml-64 h-screen flex flex-col">
+    
+    <!-- TopNavBar -->
+    <header class="flex justify-between items-center px-8 py-4 w-full sticky top-0 z-30 bg-[#1a1a2e] border-b border-white/5">
+      <div class="flex items-center gap-4">
+        <span class="text-lg font-bold tracking-wider text-[#00b4d8] uppercase font-inter antialiased">Aether Ahmedabad</span>
+        <div class="h-4 w-[1px] bg-white/10"></div>
+        <span class="text-sm text-slate-400">Pollutant Explorer</span>
+      </div>
+      
+    </header>
+
+    <!-- Scrollable Content -->
+    <div class="flex-1 overflow-y-auto p-8 space-y-gutter bg-[#1a1a2e]">
+      
+      <!-- Tab Selector -->
+      <div class="flex gap-2 p-1 bg-surface-container-lowest rounded-xl w-fit border border-white/5">
+        <button id="tab-pm2_5" onclick="switchPollutant('pm2_5')" class="px-6 py-2 rounded-lg bg-primary-container text-on-primary font-bold text-sm transition-all shadow-lg">PM2.5</button>
+        <button id="tab-pm10" onclick="switchPollutant('pm10')" class="px-6 py-2 rounded-lg text-slate-400 hover:text-white hover:bg-white/5 font-medium text-sm transition-all">PM10</button>
+        <button id="tab-nitrogen_dioxide" onclick="switchPollutant('nitrogen_dioxide')" class="px-6 py-2 rounded-lg text-slate-400 hover:text-white hover:bg-white/5 font-medium text-sm transition-all">NO2</button>
+        <button id="tab-sulphur_dioxide" onclick="switchPollutant('sulphur_dioxide')" class="px-6 py-2 rounded-lg text-slate-400 hover:text-white hover:bg-white/5 font-medium text-sm transition-all">SO2</button>
+        <button id="tab-carbon_monoxide" onclick="switchPollutant('carbon_monoxide')" class="px-6 py-2 rounded-lg text-slate-400 hover:text-white hover:bg-white/5 font-medium text-sm transition-all">CO</button>
+        <button id="tab-ozone" onclick="switchPollutant('ozone')" class="px-6 py-2 rounded-lg text-slate-400 hover:text-white hover:bg-white/5 font-medium text-sm transition-all">Ozone</button>
+      </div>
+
+      <!-- Main Chart Card -->
+      <section class="bg-[#16213e] border border-white/5 p-6 rounded-xl overflow-hidden">
+        <div class="flex justify-between items-start mb-8">
+          <div>
+            <h2 id="chart-title" class="font-h2 text-primary">PM2.5 Trend Over Time (2022–2026)</h2>
+            <p class="text-slate-400 text-sm mt-1">Forecast data model based on seasonal historical variance</p>
+          </div>
+          <div class="flex gap-4">
+            <div class="flex items-center gap-2">
+              <div class="w-3 h-3 rounded-full bg-primary shadow-[0_0_8px_rgba(76,214,251,0.5)]"></div>
+              <span class="text-xs text-slate-300 font-medium">Actual / Projected</span>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Mock Line Chart -->
+        <div class="h-64 relative mt-4">
+          <canvas id="pollutantChart" style="width:100% !important; height:240px !important; display:block;"></canvas>
+        </div>
+      </section>
+
+      <!-- Grid for Correlation and Stats -->
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-gutter">
+        
+        <!-- Scatter Plot Card -->
+        <div class="bg-[#16213e] border border-white/5 p-6 rounded-xl h-[400px] flex flex-col overflow-hidden">
+          <h3 class="font-h3 text-on-surface mb-4 flex items-center gap-2">
+            <span class="material-symbols-outlined text-primary" data-icon="scatter_plot">scatter_plot</span>
+            <span id="scatter-title">PM2.5 vs AQI Correlation</span>
+          </h3>
+          <div class="flex-1 min-h-0 relative">
+            <canvas id="scatterChart"></canvas>
+          </div>
+        </div>
+
+        <!-- Stats Box -->
+        <div class="bg-[#16213e] border border-white/5 p-6 rounded-xl flex flex-col justify-between">
+          <div>
+            <h3 class="font-h3 text-on-surface mb-6">Historical Insight Analysis</h3>
+            <div class="grid grid-cols-2 gap-4">
+              <div class="p-4 bg-surface-container-low rounded-lg border border-white/5">
+                <span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Average</span>
+                <div class="text-3xl font-h1 text-white mt-1"><span id="stat-avg">30</span> <span id="stat-unit" class="text-sm font-medium text-slate-500">µg/m³</span></div>
+              </div>
+              <div class="p-4 bg-surface-container-low rounded-lg border border-white/5">
+                <span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Max Recorded</span>
+                <div class="text-3xl font-h1 text-white mt-1"><span id="stat-max">115</span> <span class="text-sm font-medium text-slate-500">µg/m³</span></div>
+              </div>
+              <div class="p-4 bg-surface-container-low rounded-lg border border-white/5">
+                <span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Safe Limit</span>
+                <div class="text-3xl font-h1 text-primary mt-1"><span id="stat-limit">60</span> <span class="text-sm font-medium text-slate-500">µg/m³</span></div>
+              </div>
+              <div class="p-4 bg-surface-container-low rounded-lg border border-white/5">
+                <span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Deviation</span>
+                <div class="text-3xl font-h1 text-tertiary mt-1"><span id="stat-dev">+12%</span> <span class="text-sm font-medium text-slate-500">YOY</span></div>
+              </div>
+            </div>
+          </div>
+          
+          <div class="mt-6 p-4 bg-tertiary/10 rounded-lg border border-tertiary/20 flex items-center gap-4">
+            <div class="w-10 h-10 rounded-full bg-tertiary/20 flex items-center justify-center text-tertiary">
+              <span class="material-symbols-outlined" data-icon="warning" style="font-variation-settings: 'FILL' 1;">warning</span>
+            </div>
+            <div>
+              <p class="text-tertiary font-bold text-sm">Actionable Alert</p>
+              <p id="alert-text" class="text-on-surface-variant text-sm">Exceeds limit on 23% of days</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Correlation Ranking -->
+      <section class="bg-[#16213e] border border-white/5 p-6 rounded-xl">
+        <h3 class="font-h3 text-on-surface mb-6">Pollutant Correlation Ranking (vs Global AQI)</h3>
+        <div id="ranking-container" class="space-y-4">
+        </div>
+      </section>
+
+    </div>
+  </main>
+
+  <!-- FAB Suppression: Contextually hidden as per rules (Details/Settings/Transactional contexts) -->
+  
+<script>
+let allData = [];
+let trendChart = null;
+let scatterChart = null;
+
+const POLLUTANTS = {
+  pm2_5: {label:'PM2.5', limit:60, unit:'µg/m³'},
+  pm10: {label:'PM10', limit:100, unit:'µg/m³'},
+  nitrogen_dioxide: {label:'NO2', limit:80, unit:'µg/m³'},
+  sulphur_dioxide: {label:'SO2', limit:80, unit:'µg/m³'},
+  carbon_monoxide: {label:'CO', limit:2000, unit:'µg/m³'},
+  ozone: {label:'Ozone', limit:100, unit:'µg/m³'}
+};
+
+function avg(arr) {
+  const v = arr.filter(x=>x!==null&&!isNaN(x));
+  return v.length ? v.reduce((a,b)=>a+b,0)/v.length:0;
+}
+
+function calculateCorrelation(x, y) {
+  const n = x.length;
+  if(n === 0) return 0;
+  const sumX = x.reduce((a,b)=>a+b,0);
+  const sumY = y.reduce((a,b)=>a+b,0);
+  const sumXY = x.reduce((a,b,i)=>a+b*y[i],0);
+  const sumX2 = x.reduce((a,b)=>a+b*b,0);
+  const sumY2 = y.reduce((a,b)=>a+b*b,0);
+  const num = n*sumXY - sumX*sumY;
+  const den = Math.sqrt((n*sumX2 - sumX*sumX)*(n*sumY2 - sumY*sumY));
+  return den === 0 ? 0 : num / den;
+}
+
+function switchPollutant(key) {
+  const p = POLLUTANTS[key];
+  if(!p) return;
+
+  // Update tabs UI
+  Object.keys(POLLUTANTS).forEach(k => {
+    const btn = document.getElementById('tab-'+k);
+    if(btn) {
+      if(k === key) {
+        btn.className = "px-6 py-2 rounded-lg bg-primary-container text-on-primary font-bold text-sm transition-all shadow-lg";
+      } else {
+        btn.className = "px-6 py-2 rounded-lg text-slate-400 hover:text-white hover:bg-white/5 font-medium text-sm transition-all";
+      }
+    }
+  });
+
+  document.getElementById('chart-title').textContent = `${p.label} Trend Over Time (Historical)`;
+  document.getElementById('scatter-title').textContent = `${p.label} vs AQI Correlation`;
+
+  // Filter valid data
+  const valid = allData.filter(r => r[key] !== null && r.us_aqi !== null);
+  const labels = valid.map(r => r.date);
+  const pData = valid.map(r => r[key]);
+  const aqiData = valid.map(r => r.us_aqi);
+
+  // ── TREND CHART ──
+  if (trendChart) trendChart.destroy();
+  const ctx1 = document.getElementById('pollutantChart').getContext('2d');
+  trendChart = new Chart(ctx1, {
+    type: 'line',
+    data: {
+      labels,
+      datasets: [{
+        label: p.label,
+        data: pData,
+        borderColor: '#00b4d8',
+        backgroundColor: 'rgba(0,180,216,0.1)',
+        borderWidth: 2,
+        fill: true,
+        pointRadius: 0,
+        tension: 0.3
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: { legend: { display: false } },
+      scales: {
+        x: { 
+          display: true,
+          title: { display: true, text: 'Timeline', color: '#94a3b8', font: { size: 11, weight: 'bold' } },
+          ticks: { color: '#64748b', font: { size: 10 }, maxTicksLimit: 12 },
+          grid: { color: 'rgba(255,255,255,0.03)' }
+        },
+        y: { 
+          title: { display: true, text: 'Concentration', color: '#94a3b8', font: { size: 11, weight: 'bold' } },
+          grid: { color: 'rgba(255,255,255,0.05)' }, 
+          ticks: { color: '#64748b' } 
+        }
+      }
+    }
+  });
+
+  // ── SCATTER PLOT ──
+  if (scatterChart) scatterChart.destroy();
+  const ctx2 = document.getElementById('scatterChart').getContext('2d');
+  scatterChart = new Chart(ctx2, {
+    type: 'scatter',
+    data: {
+      datasets: [{
+        label: `${p.label} vs AQI`,
+        data: valid.map(r => ({x: r[key], y: r.us_aqi})),
+        backgroundColor: 'rgba(76,214,251,0.5)',
+        pointRadius: 2
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: { legend: { display: false } },
+      scales: {
+        x: { 
+          title: { display: true, text: `${p.label} Concentration`, color: '#94a3b8', font:{size:11, weight:'bold'} },
+          grid: { color: 'rgba(255,255,255,0.05)' },
+          ticks: { color: '#64748b' }
+        },
+        y: { 
+          title: { display: true, text: 'AQI Index', color: '#94a3b8', font:{size:11, weight:'bold'} },
+          grid: { color: 'rgba(255,255,255,0.05)' },
+          ticks: { color: '#64748b' }
+        }
+      }
+    }
+  });
+
+  // ── STATS ──
+  const pAvg = Math.round(avg(pData));
+  const pMax = Math.round(Math.max(...pData));
+  document.getElementById('stat-avg').textContent = pAvg;
+  document.getElementById('stat-unit').textContent = p.unit;
+  document.getElementById('stat-max').textContent = pMax;
+  document.getElementById('stat-limit').textContent = p.limit;
+  
+  const exceedCount = pData.filter(v => v > p.limit).length;
+  const exceedPct = Math.round(((exceedCount / pData.length) * 100));
+  document.getElementById('alert-text').textContent = `Exceeds limit on ${exceedPct}% of recorded days`;
+
+  // ── RANKING ──
+  const ranking = Object.keys(POLLUTANTS).map(k => {
+    const kValid = allData.filter(r => r[k] !== null && r.us_aqi !== null);
+    const corr = calculateCorrelation(kValid.map(r=>r[k]), kValid.map(r=>r.us_aqi));
+    return {key: k, label: POLLUTANTS[k].label, corr};
+  }).sort((a,b) => b.corr - a.corr);
+
+  const rankContainer = document.getElementById('ranking-container');
+  rankContainer.innerHTML = ranking.map(item => `
+    <div class="space-y-1">
+      <div class="flex justify-between text-xs font-bold uppercase tracking-widest text-slate-400">
+        <span>${item.label}</span>
+        <span class="${item.key === key ? 'text-primary' : 'text-slate-300'}">${item.corr.toFixed(2)} Correlation</span>
+      </div>
+      <div class="h-2 w-full bg-surface-container-lowest rounded-full overflow-hidden">
+        <div class="h-full bg-primary rounded-full" style="width: ${item.corr * 100}%"></div>
+      </div>
+    </div>
+  `).join('');
+}
+
+Papa.parse('data/air_quality_historical.csv', {
+  download: true, header: true, dynamicTyping: true,
+  complete: function(results) {
+    allData = results.data.filter(r => r.date);
+    switchPollutant('pm2_5');
+  }
+});
+</script>
+</body>
+</html>

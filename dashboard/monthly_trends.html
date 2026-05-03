@@ -1,0 +1,563 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Monthly Trends - Midnight Ozone</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&amp;display=swap"
+        rel="stylesheet" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+        rel="stylesheet" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+        rel="stylesheet" />
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface-bright": "#2c3a4c",
+                        "error-container": "#93000a",
+                        "background": "#051424",
+                        "tertiary-container": "#eb8f3b",
+                        "surface-container-low": "#0d1c2d",
+                        "secondary-fixed": "#d5e3ff",
+                        "on-primary-fixed-variant": "#004e5f",
+                        "on-error-container": "#ffdad6",
+                        "tertiary": "#ffb77d",
+                        "tertiary-fixed": "#ffdcc3",
+                        "on-tertiary-fixed-variant": "#6e3900",
+                        "outline": "#869398",
+                        "on-secondary-fixed": "#001b3c",
+                        "on-secondary-container": "#9bbaee",
+                        "on-primary-fixed": "#001f27",
+                        "tertiary-fixed-dim": "#ffb77d",
+                        "primary-fixed-dim": "#4cd6fb",
+                        "on-surface": "#d4e4fa",
+                        "on-secondary-fixed-variant": "#274774",
+                        "surface-container-lowest": "#010f1f",
+                        "secondary-container": "#294a77",
+                        "error": "#ffb4ab",
+                        "surface-container": "#122131",
+                        "primary-container": "#00b4d8",
+                        "surface-tint": "#4cd6fb",
+                        "secondary": "#a9c8fc",
+                        "secondary-fixed-dim": "#a9c8fc",
+                        "primary-fixed": "#b3ebff",
+                        "on-background": "#d4e4fa",
+                        "outline-variant": "#3d494d",
+                        "inverse-primary": "#00677d",
+                        "surface-dim": "#051424",
+                        "on-tertiary": "#4d2600",
+                        "surface-variant": "#273647",
+                        "on-primary": "#003642",
+                        "primary": "#4cd6fb",
+                        "inverse-on-surface": "#233143",
+                        "on-primary-container": "#00414f",
+                        "on-secondary": "#09305c",
+                        "surface-container-high": "#1c2b3c",
+                        "on-surface-variant": "#bcc9ce",
+                        "surface": "#051424",
+                        "on-error": "#690005",
+                        "inverse-surface": "#d4e4fa",
+                        "on-tertiary-fixed": "#2f1500",
+                        "surface-container-highest": "#273647",
+                        "on-tertiary-container": "#5d2f00"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "unit": "8px",
+                        "lg": "24px",
+                        "container-max": "1440px",
+                        "xl": "48px",
+                        "xs": "4px",
+                        "margin": "32px",
+                        "sm": "8px",
+                        "gutter": "24px",
+                        "md": "16px"
+                    },
+                    "fontFamily": {
+                        "h3": ["Inter"],
+                        "code": ["Inter"],
+                        "h1": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "label-sm": ["Inter"],
+                        "h2": ["Inter"],
+                        "body-md": ["Inter"]
+                    },
+                    "fontSize": {
+                        "h3": ["20px", { "lineHeight": "1.4", "letterSpacing": "-0.01em", "fontWeight": "500" }],
+                        "code": ["13px", { "lineHeight": "1.4", "letterSpacing": "0", "fontWeight": "400" }],
+                        "h1": ["32px", { "lineHeight": "1.2", "letterSpacing": "-0.02em", "fontWeight": "600" }],
+                        "body-lg": ["16px", { "lineHeight": "1.6", "letterSpacing": "0", "fontWeight": "400" }],
+                        "label-sm": ["12px", { "lineHeight": "1.2", "letterSpacing": "0.02em", "fontWeight": "500" }],
+                        "h2": ["24px", { "lineHeight": "1.3", "letterSpacing": "-0.01em", "fontWeight": "600" }],
+                        "body-md": ["14px", { "lineHeight": "1.5", "letterSpacing": "0", "fontWeight": "400" }]
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background-color: #1a1a2e;
+        }
+
+        .card-bg {
+            background-color: #16213e;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #3d494d;
+            border-radius: 10px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #1a1a2e;
+        }
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/papaparse@5/papaparse.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4/dist/chart.umd.min.js"></script>
+</head>
+
+<body class="font-body-md text-on-surface antialiased flex">
+    <!-- SideNavBar (Execution from JSON) -->
+    <aside
+        class="flex flex-col fixed left-0 top-0 h-full py-6 bg-[#16213e] w-64 border-r border-white/5 font-inter text-sm antialiased z-50">
+        <div class="px-6 mb-10">
+            <h1 class="text-xl font-black text-[#00b4d8]">Ahmedabad AQI</h1>
+            <p class="text-slate-400 text-xs mt-1">Precision Monitoring</p>
+        </div>
+
+        <nav class="flex flex-col flex-1">
+
+            <a class="flex items-center gap-3 px-4 py-3 text-slate-400 hover:text-slate-200 hover:bg-white/5 font-medium transition-all duration-200"
+                href="overview.html">
+                <span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+                <span>Overview</span>
+            </a>
+            <a class="flex items-center gap-3 px-4 py-3 text-slate-400 hover:text-slate-200 hover:bg-white/5 font-medium transition-all duration-200"
+                href="date_explorer.html">
+                <span class="material-symbols-outlined" data-icon="calendar_month">calendar_month</span>
+                <span>Date Explorer</span>
+            </a>
+            <a class="flex items-center gap-3 px-4 py-3 bg-[#00b4d8]/10 text-[#00b4d8] border-r-4 border-[#00b4d8] font-medium transition-all duration-200"
+                href="monthly_trends.html">
+                <span class="material-symbols-outlined" data-icon="stacked_line_chart">stacked_line_chart</span>
+                <span>Monthly Trends</span>
+            </a>
+            <a class="flex items-center gap-3 px-4 py-3 text-slate-400 hover:text-slate-200 hover:bg-white/5 font-medium transition-all duration-200"
+                href="pollutant.html">
+                <span class="material-symbols-outlined" data-icon="air">air</span>
+                <span>Pollutant Explorer</span>
+            </a>
+            <a class="flex items-center gap-3 px-4 py-3 text-slate-400 hover:text-slate-200 hover:bg-white/5 font-medium transition-all duration-200"
+                href="predictor.html">
+                <span class="material-symbols-outlined" data-icon="batch_prediction">batch_prediction</span>
+                <span>AQI Predictor</span>
+            </a>
+            <a class="flex items-center gap-3 px-4 py-3 text-slate-400 hover:text-slate-200 hover:bg-white/5 font-medium transition-all duration-200"
+                href="correlation.html">
+                <span class="material-symbols-outlined" data-icon="query_stats">query_stats</span>
+                <span>Correlation Insights</span>
+            </a>
+        </nav>
+    </aside>
+    <!-- Main Content Area -->
+    <main class="ml-64 flex-1 min-h-screen">
+        <!-- TopAppBar (Execution from JSON) -->
+        <header
+            class="bg-[#1a1a2e] dark:bg-[#1a1a2e] flex justify-between items-center w-full px-8 h-16 border-b border-white/5 font-inter tracking-tight antialiased sticky top-0 z-10">
+            <div class="flex items-center space-x-4">
+                <span class="text-xl font-black tracking-tighter text-white">Midnight Ozone</span>
+                <span class="text-slate-500">/</span>
+                <span class="text-on-surface font-medium">Monthly Trends</span>
+            </div>
+
+            </div>
+        </header>
+        <!-- Page Content -->
+        <div class="p-margin space-y-lg">
+            <!-- Top Section: Dropdown Selector -->
+            <div class="flex justify-between items-center">
+                <div class="space-y-1">
+                    <h2 class="font-h2 text-h2 text-on-surface">Temporal Analysis</h2>
+                    <p class="font-body-md text-slate-400">Viewing comparative AQI metrics for active monitoring cycles.
+                    </p>
+                </div>
+                <div class="flex flex-col space-y-2">
+                    <label class="font-label-sm text-label-sm text-cyan-400 uppercase tracking-widest">Select
+                        Year</label>
+                    <select id="year-select"
+                        class="bg-[#16213e] border border-cyan-400/50 text-white rounded-lg px-4 py-2 font-body-md focus:ring-0 focus:border-cyan-400 cursor-pointer min-w-[140px]">
+                        <option value="2022">2022</option>
+                        <option value="2023">2023</option>
+                        <option selected="" value="2024">2024</option>
+                        <option value="2025">2025</option>
+                    </select>
+                </div>
+            </div>
+            <!-- Middle Section 1: Month-wise Average AQI -->
+            <section class="card-bg rounded-xl p-lg">
+                <div class="flex justify-between items-center mb-xl">
+                    <h3 class="font-h3 text-h3 text-on-surface">Month-wise Average AQI — 2024</h3>
+                    <div class="flex space-x-4">
+                        <div class="flex items-center space-x-2">
+                            <span class="w-3 h-3 rounded-full bg-[#4ade80]"></span>
+                            <span class="text-[10px] text-slate-400 uppercase tracking-tighter">Good</span>
+                        </div>
+                        <div class="flex items-center space-x-2">
+                            <span class="w-3 h-3 rounded-full bg-[#facc15]"></span>
+                            <span class="text-[10px] text-slate-400 uppercase tracking-tighter">Moderate</span>
+                        </div>
+                        <div class="flex items-center space-x-2">
+                            <span class="w-3 h-3 rounded-full bg-[#fb923c]"></span>
+                            <span class="text-[10px] text-slate-400 uppercase tracking-tighter">Unhealthy</span>
+                        </div>
+                        <div class="flex items-center space-x-2">
+                            <span class="w-3 h-3 rounded-full bg-[#f87171]"></span>
+                            <span class="text-[10px] text-slate-400 uppercase tracking-tighter">Hazardous</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="h-64 flex items-end justify-between px-md relative">
+                    <canvas id="monthlyChart" 
+style="width:100% !important;
+height:220px !important;display:block;"></canvas>
+                </div>
+            </section>
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-lg">
+                <!-- Middle Section 2: Season-wise AQI Comparison -->
+                <section class="card-bg rounded-xl p-lg">
+                    <div class="flex justify-between items-center mb-xl">
+                        <h3 class="font-h3 text-h3 text-on-surface">Season-wise AQI Comparison</h3>
+                        <div class="flex space-x-3">
+                            <div class="flex items-center space-x-1">
+                                <div class="w-2 h-2 rounded-full bg-cyan-600"></div>
+                                <span class="text-[9px] text-slate-500 uppercase">2023</span>
+                            </div>
+                            <div class="flex items-center space-x-1">
+                                <div class="w-2 h-2 rounded-full bg-cyan-400"></div>
+                                <span class="text-[9px] text-slate-500 uppercase font-bold text-cyan-400">2024</span>
+                            </div>
+                            <div class="flex items-center space-x-1">
+                                <div class="w-2 h-2 rounded-full bg-cyan-200"></div>
+                                <span class="text-[9px] text-slate-500 uppercase">2025</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="h-56 flex items-end justify-between px-md space-x-8">
+                        <canvas id="seasonChart"
+style="width:100% !important;
+height:200px !important;display:block;"></canvas>
+                    </div>
+                </section>
+                <!-- Bottom Section: Insight Card -->
+                <section class="flex flex-col justify-between space-y-gutter">
+                    <div class="card-bg rounded-xl p-lg flex items-start space-x-md flex-1">
+                        <div class="bg-cyan-400/10 p-3 rounded-lg">
+                            <span class="material-symbols-outlined text-cyan-400" data-weight="fill">insights</span>
+                        </div>
+                        <div class="space-y-sm">
+                            <h4 class="text-cyan-400 font-semibold tracking-wide text-sm uppercase">Predictive Insight
+                            </h4>
+                            <p class="font-body-lg text-on-surface leading-relaxed">
+                                Monsoon months <span class="text-cyan-400 font-semibold">(Jul–Sep)</span> consistently
+                                show lowest AQI.
+                                Winter months <span class="text-error font-semibold">(Dec–Jan)</span> show highest
+                                pollution levels across the observed 3-year cycle.
+                            </p>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-2 gap-gutter">
+                        <div class="card-bg rounded-xl p-md flex flex-col justify-center border-l-2 border-cyan-400">
+                            <span class="text-slate-500 text-[10px] uppercase font-bold tracking-widest">Average Annual
+                                AQI</span>
+                            <span id="val-annual-aqi" class="text-h2 font-h2 text-cyan-400">114.2</span>
+                            <span class="text-[10px] text-error flex items-center mt-1">
+                                <span class="material-symbols-outlined text-[12px] mr-1">trending_up</span>
+                                <span id="val-aqi-change">+4.2% from 2023</span>
+                            </span>
+                        </div>
+                        <div
+                            class="card-bg rounded-xl p-md flex flex-col justify-center border-l-2 border-primary-container">
+                            <span class="text-slate-500 text-[10px] uppercase font-bold tracking-widest">Best Air
+                                Quality</span>
+                            <span id="val-best-month" class="text-h2 font-h2 text-primary-container">August</span>
+                            <span class="text-[10px] text-cyan-400 flex items-center mt-1">
+                                <span class="material-symbols-outlined text-[12px] mr-1">check_circle</span>
+                                Optima Level
+                            </span>
+                        </div>
+                    </div>
+                </section>
+            </div>
+            <!-- Detailed Data View Section (Optional Addition for Layout Richness) -->
+            <section class="card-bg rounded-xl overflow-hidden">
+                <div class="p-lg border-b border-white/5 flex justify-between items-center">
+                    <h3 id="monthly-table-title" class="font-h3 text-h3 text-on-surface">Regional Monthly Breakdown</h3>
+                    <button id="export-btn" class="text-cyan-400 font-label-sm text-label-sm flex items-center hover:underline">
+                        Export Data <span class="material-symbols-outlined ml-1 text-sm">download</span>
+                    </button>
+                </div>
+                <table class="w-full text-left">
+                    <thead class="bg-surface-container-low/50 text-[11px] uppercase tracking-wider text-slate-500">
+                        <tr>
+                            <th class="px-lg py-4 font-semibold">Region Node</th>
+                            <th class="px-lg py-4 font-semibold">Max AQI (Dec)</th>
+                            <th class="px-lg py-4 font-semibold">Min AQI (Aug)</th>
+                            <th class="px-lg py-4 font-semibold">Volatility</th>
+                            <th class="px-lg py-4 font-semibold">Status</th>
+                        </tr>
+                    </thead>
+                    <tbody id="monthly-table-body" 
+  class="divide-y divide-white/5 font-body-md 
+  text-slate-300">
+</tbody>
+                </table>
+            </section>
+        </div>
+    </main>
+<script>
+let allData = [];
+let monthChart = null;
+let seasonChart = null;
+
+const MONTHS = ['Jan','Feb','Mar','Apr','May',
+  'Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+const SEASON_MAP = {
+  1:'Winter',2:'Winter',3:'Summer',4:'Summer',
+  5:'Summer',6:'Summer',7:'Monsoon',8:'Monsoon',
+  9:'Monsoon',10:'Post-Monsoon',11:'Post-Monsoon',
+  12:'Winter'
+};
+
+function getBarColor(aqi) {
+  if (aqi <= 50) return '#4ade80';
+  if (aqi <= 100) return '#facc15';
+  if (aqi <= 150) return '#fb923c';
+  return '#f87171';
+}
+
+function avg(arr) {
+  const v = arr.filter(x=>x!==null&&!isNaN(x));
+  return v.length ? v.reduce((a,b)=>a+b,0)/v.length:0;
+}
+
+function updateCharts(year) {
+  const yearData = allData.filter(r => {
+    return new Date(r.date).getFullYear() 
+      === parseInt(year);
+  });
+
+  // ── MONTHLY BAR CHART ──
+  const monthlyAvg = Array(12).fill(0).map((_,i) => {
+    const rows = yearData.filter(r =>
+      new Date(r.date).getMonth() === i);
+    return rows.length ? avg(rows.map(r=>r.us_aqi)) : 0;
+  });
+
+  const barColors = monthlyAvg.map(getBarColor);
+
+  if (monthChart) monthChart.destroy();
+  const ctx1 = document.getElementById(
+    'monthlyChart').getContext('2d');
+  monthChart = new Chart(ctx1, {
+    type: 'bar',
+    data: {
+      labels: MONTHS,
+      datasets: [{
+        label: 'Avg AQI',
+        data: monthlyAvg.map(v=>parseFloat(v.toFixed(1))),
+        backgroundColor: barColors,
+        borderRadius: 4
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          callbacks: {
+            label: ctx => 
+              'AQI: '+Math.round(ctx.parsed.y)
+          }
+        }
+      },
+      scales: {
+        x: {
+          title: { display: true, text: 'Months', color: '#94a3b8', font: { size: 11, weight: 'bold' } },
+          ticks:{color:'#94a3b8',font:{size:11}},
+          grid:{color:'rgba(255,255,255,0.03)'}
+        },
+        y: {
+          title: { display: true, text: 'Average AQI', color: '#94a3b8', font: { size: 11, weight: 'bold' } },
+          ticks:{color:'#94a3b8',font:{size:11}},
+          grid:{color:'rgba(255,255,255,0.03)'},
+          min:0
+        }
+      }
+    }
+  });
+
+  // ── SEASON GROUPED BAR CHART ──
+  const seasons=['Winter','Summer',
+    'Monsoon','Post-Monsoon'];
+  const years = [2023, 2024, 2025];
+  const yearColors = [
+    'rgba(8,145,178,0.6)',
+    'rgba(0,180,216,1)',
+    'rgba(165,243,252,0.6)'
+  ];
+
+  const datasets = years.map((yr, i) => {
+    const yData = allData.filter(r =>
+      new Date(r.date).getFullYear() === yr);
+    const vals = seasons.map(s => {
+      const rows = yData.filter(r => {
+        const m = new Date(r.date).getMonth()+1;
+        return SEASON_MAP[m] === s;
+      });
+      return rows.length 
+        ? parseFloat(avg(rows.map(r=>r.us_aqi))
+          .toFixed(1)) : 0;
+    });
+    return {
+      label: String(yr),
+      data: vals,
+      backgroundColor: yearColors[i],
+      borderRadius: 3
+    };
+  });
+
+  if (seasonChart) seasonChart.destroy();
+  const ctx2 = document.getElementById(
+    'seasonChart').getContext('2d');
+  seasonChart = new Chart(ctx2, {
+    type: 'bar',
+    data: { labels: seasons, datasets },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: {
+          labels:{color:'#94a3b8',font:{size:10}}
+        }
+      },
+      scales: {
+        x: {
+          title: { display: true, text: 'Seasons', color: '#94a3b8', font: { size: 11, weight: 'bold' } },
+          ticks:{color:'#94a3b8',font:{size:11}},
+          grid:{color:'rgba(255,255,255,0.03)'}
+        },
+        y: {
+          title: { display: true, text: 'Seasonal Avg AQI', color: '#94a3b8', font: { size: 11, weight: 'bold' } },
+          ticks:{color:'#94a3b8',font:{size:11}},
+          grid:{color:'rgba(255,255,255,0.03)'},
+          min:0
+        }
+      }
+    }
+  });
+
+  // ── INSIGHT CARDS ──
+  const annualAvg = Math.round(avg(yearData.map(r=>r.us_aqi)));
+  document.getElementById('val-annual-aqi')
+    .textContent = annualAvg;
+
+  const prevYear = allData.filter(r =>
+    new Date(r.date).getFullYear()===parseInt(year)-1);
+  if (prevYear.length) {
+    const prevAvg = avg(prevYear.map(r=>r.us_aqi));
+    const change = Math.round(((annualAvg-prevAvg)/prevAvg*100));
+    const sign = change > 0 ? '+' : '';
+    document.getElementById('val-aqi-change')
+      .textContent = sign+change+'% from '
+      +(parseInt(year)-1);
+  }
+
+  const bestMonthIdx = monthlyAvg.indexOf(
+    Math.min(...monthlyAvg.filter(v=>v>0)));
+  document.getElementById('val-best-month')
+    .textContent = MONTHS[bestMonthIdx] || 'August';
+
+  // ── TABLE ──
+  const tbody = document.getElementById(
+    'monthly-table-body');
+  tbody.innerHTML = MONTHS.map((m, i) => {
+    const rows = yearData.filter(r =>
+      new Date(r.date).getMonth() === i);
+    if (!rows.length) return '';
+    const mAvg = Math.round(avg(rows.map(r=>r.us_aqi)));
+    const mMax = Math.round(Math.max(...rows.map(r=>r.us_aqi)));
+    const mMin = Math.round(Math.min(...rows.map(r=>r.us_aqi)));
+    const vol = mMax - mMin > 60 ? 'High' 
+      : mMax-mMin > 30 ? 'Moderate' : 'Low';
+    const volColor = vol==='High' 
+      ? '#ffb4ab' : vol==='Moderate' 
+      ? '#ffb77d' : '#4ade80';
+    return `<tr class="hover:bg-white/5 transition-colors">
+      <td class="px-lg py-4">${m} ${year}</td>
+      <td class="px-lg py-4">${mMax}</td>
+      <td class="px-lg py-4">${mMin}</td>
+      <td class="px-lg py-4">${vol}</td>
+      <td class="px-lg py-4">
+        <div class="flex items-center space-x-2">
+          <span class="w-1.5 h-1.5 rounded-full" 
+            style="background:${volColor}"></span>
+          <span class="text-xs">${mAvg} avg</span>
+        </div>
+      </td>
+    </tr>`;
+  }).join('');
+}
+
+Papa.parse('data/air_quality_historical.csv', {
+  download:true, header:true, dynamicTyping:true,
+  complete: function(results) {
+    allData = results.data.filter(
+      r => r.date && r.us_aqi !== null);
+    const sel = document.getElementById('year-select');
+    updateCharts(sel.value);
+    sel.addEventListener('change', e => 
+      updateCharts(e.target.value));
+
+    // Export button
+    document.getElementById('export-btn')
+      .addEventListener('click', () => {
+        const year = document.getElementById('year-select').value;
+        const yearData = allData.filter(r => 
+          new Date(r.date).getFullYear() === parseInt(year));
+        const csv = Papa.unparse(yearData);
+        const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+        const link = document.createElement("a");
+        link.href = URL.createObjectURL(blob);
+        link.setAttribute("download", `aqi_trends_${year}.csv`);
+        link.click();
+      });
+  }
+});
+</script>
+</body>
+
+</html>
