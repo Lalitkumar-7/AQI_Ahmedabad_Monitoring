@@ -1,6 +1,6 @@
 # Ahmedabad AQI Dashboard
 
-Live Dashboard → [Click Here](https://yourusername.github.io/aqi-ahmedabad/overview.html)
+Live Dashboard → [Click Here](https://github.com/Lalitkumar-7/AQI_Ahmedabad_Monitoring/settings/pages)
 
 ## About
 Air Quality Index analysis and prediction for 
